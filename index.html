@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en-US" class="root">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Maze Solver</title>
+        <meta name="viewport" content="width=1180"/>
+        <link rel='stylesheet' href='css/style.css' type='text/css' media='all' />
+    </head>
+    <body>
+        <div id="container">
+
+            <header class="header">
+                <div id="inner-header" class="wrap clearfix">
+                    <h1 class="logo"><a href="./">Maze Solver</a></h1>
+                </div>
+            </header>
+
+            <div id="content">
+                <div id="inner-content" class="wrap clearfix">
+                    <h3 class="problem-title">The Problem</h3>
+                    <div class="problem-box">
+                        <embed src="CodeTest.pdf" height="200" width="100%">
+                    </div>
+                    <div class="clearfix">
+                        <div class="sixcol first">
+                            <h3>The Core Maze</h3>
+                            <div class="maze-box">
+
+                                <span data-cords="[0,4]" data-path-open="no"></span>
+                                <span data-cords="[1,4]" data-path-open="no"></span>
+                                <span data-cords="[2,4]" data-path-open="no"></span>
+                                <span data-cords="[3,4]" data-path-open="no"></span>
+                                <span data-cords="[4,4]" data-path-open="no"></span>
+
+                                <span data-cords="[0,3]" data-path-open="no"></span>
+                                <span data-cords="[1,3]" data-path-open="yes"></span>
+                                <span data-cords="[2,3]" data-path-open="yes"></span>
+                                <span data-cords="[3,3]" data-path-open="yes"></span>
+                                <span data-cords="[4,3]" data-path-open="yes"><strong>-> Out</strong></span>
+
+                                <span data-cords="[0,2]" data-path-open="no"></span>
+                                <span data-cords="[1,2]" data-path-open="yes"></span>
+                                <span data-cords="[2,2]" data-path-open="yes"></span>
+                                <span data-cords="[3,2]" data-path-open="yes"></span>
+                                <span data-cords="[4,2]" data-path-open="no"></span>
+
+                                <span data-cords="[0,1]" data-path-open="yes"><strong>In -></strong></span>
+                                <span data-cords="[1,1]" data-path-open="yes"></span>
+                                <span data-cords="[2,1]" data-path-open="yes"></span>
+                                <span data-cords="[3,1]" data-path-open="yes"></span>
+                                <span data-cords="[4,1]" data-path-open="no"></span>
+
+                                <span data-cords="[0,0]" data-path-open="no"></span>
+                                <span data-cords="[1,0]" data-path-open="no"></span>
+                                <span data-cords="[2,0]" data-path-open="no"></span>
+                                <span data-cords="[3,0]" data-path-open="no"></span>
+                                <span data-cords="[4,0]" data-path-open="no"></span>
+
+                            </div>
+                            <div class="maze-box glossary">
+                                Color Codes:<br>
+                                <span data-path-open="no" data-cords="&nbsp;"></span> = path blocked in core maze<br>
+                                <span data-path-open="yes" data-cords="&nbsp;"></span> = path open in core maze<br>
+                                <span data-divider="yes" data-cords="&nbsp;"></span> = path blocked by new divider<br>
+                                <span data-checking="yes" data-cords="&nbsp;"></span> = checking<br>
+                                <span data-path-open="yes" data-solved="yes" data-cords="&nbsp;"></span> = path step taken<br>
+                            </div>
+                        </div>
+                        <div class="sixcol last">
+                            <h3>Plot new dividers and solve the maze</h3>
+                            <div class="plot-solve">
+                                <p>Input required in format [2,2]:[2,3];[2,2]:[3,2]</p>
+                                <input type="text" placeholder="Please enter the new divider co-ordinates here" class="js-inp">
+                                <input type="button" value="Click here to plot new dividers and solve the maze" class="button js-go">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <footer class="footer">
+                <div class="wrap clearfix" id="inner-footer">
+                    <a href="./">Maze Solver</a> . Solved and maintained by utsavdevsharma .
+                </div>
+            </footer>
+
+        </div>
+        <script type='text/javascript' src='js/jquery-1.10.2.min.js'></script>
+        <script type='text/javascript' src='js/app.js'></script>
+    </body>
+</html>

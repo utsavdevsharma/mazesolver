@@ -1,0 +1,1208 @@
+/******************************************************************
+Site Name:
+Author:
+
+Stylesheet: Main Stylesheet
+
+Here's where the magic happens. Here, you'll see we are calling in
+the separate media queries. The base mobile goes outside any query
+and is called at the beginning, after that we call the rest
+of the styles inside media queries.
+******************************************************************/
+
+
+//
+// IMPORTING STYLES
+//
+
+// import normalize
+@import "_normalize.less";
+
+// import mixins
+@import "_mixins.less";
+@import "_blog_base.less";
+
+// import fonts
+@import "_fonts.less";
+@import "_glyphicon.less";
+
+/*
+BASE (MOBILE) SIZE
+This are the mobile styles. It's what people see on their phones. If
+you set a great foundation, you won't need to add too many styles in
+the other stylesheets. Remember, keep it light: Speed is Important.
+*/
+
+// import plugins
+// @import "../select2/select2.css";
+
+// styles in base.less
+@import "_base.less";
+
+/*
+LARGER MOBILE DEVICES
+This is for devices like the Galaxy Note or something that's
+larger than an iPhone but smaller than a tablet. Let's call them
+tweeners.
+*/
+@media only screen and (min-width: 481px) {
+
+	// styles in 481up.less
+	@import "_481up.less";
+
+} // end of media query
+
+@media only screen and (max-width: 767px) {
+	#container {
+		width: 100%;
+		overflow: hidden;
+		position: relative;
+	}
+	/*.header {
+		bottom: 0;
+		left: 0;
+		right: 20%;
+		overflow: hidden;
+		position: absolute;		
+		top: 0;
+		.transform(translate3d(-100%,0,0));
+		.transition(all,0.4s,ease);
+		z-index: 20;
+		.open & {
+			.transform(translate3d(0%,0,0));
+		}
+	}*/
+	.mob-menu {
+		background: lighten(@pure-black, 40%);
+		border-bottom: @blog-bewel solid @pure-black;
+		position: relative;
+		z-index: 30;
+		.head-nav {
+			float: right;
+			margin: 0;
+			.searchform {
+				margin-top: 0;
+				margin-right: 5%;
+			}
+		}
+	}
+	.toggle-mob-menu {
+		text-decoration: none;
+		color: @pure-white;
+		font-size: 2em;
+		padding: 0.2em 2% 0.4em;
+		&:hover {
+			color: @pure-white;
+		}
+	}
+	.top-nav {
+		margin-top: 4em;
+		width: 100%;
+		& + .searchform {
+			display: none;
+		}
+	}
+	#content {
+		margin-top: 0;
+		// .transform(translate3d(0%,0,0));
+		// .transition(all,0.4s,ease);
+		// .open & {
+		// 	.transform(translate3d(80%,0,0));
+		// }
+	}
+	.mob {
+		.info {
+			> img {
+				border-width: 0;
+			}
+		}
+		.respond-form {
+			width: 100%;
+		}
+	}
+}
+
+/*
+TABLET & SMALLER LAPTOPS
+This is the average viewing window. So Desktops, Laptops, and
+in general anyone not viewing on a mobile device. Here's where
+you can add resource intensive styles.
+*/
+@media only screen and (min-width: 768px) {
+
+	// import grid
+	@import "_grid.less";
+
+	// styles in 768up.less
+	@import "_768up.less";
+
+	#inner-content {
+		min-height: 460px;
+		padding-bottom: 100px;
+	}
+	.archive, .single, .error404, .search, .page-template-page-about-php, .page-template-page-for-recruiters-php {
+		.wrap {
+			max-width: 940px;
+		}
+		/*#content {
+			background: @pure-white;
+			margin-top: 0;
+			padding-top: 2.2em;
+		}*/
+	}
+	.mob-menu {
+		display: none;
+	}
+
+} // end of media query
+
+/*
+DESKTOP
+This is the average viewing window. So Desktops, Laptops, and
+in general anyone not viewing on a mobile device. Here's where
+you can add resource intensive styles.
+*/
+@media only screen and (min-width: 1030px) {
+
+	// styles in 1030up.less
+	@import "_1030up.less";
+
+} // end of media query
+
+/*
+LARGE VIEWING SIZE
+This is for the larger monitors and possibly full screen viewers.
+*/
+@media only screen and (min-width: 1240px) {
+
+	// styles in 1240up.less
+	@import "_1240up.less";
+
+} // end of media query
+
+/*
+RETINA (2x RESOLUTION DEVICES)
+This applies to the retina iPhone (4s) and iPad (2,3) along with
+other displays with a 2x resolution. You can also create a media
+query for retina AND a certain size if you want. Go Nuts.
+*/
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
+       only screen and (min--moz-device-pixel-ratio: 1.5),
+       only screen and (min-device-pixel-ratio: 1.5) {
+
+	// styles in 2x.less
+	@import "_2x.less";
+
+} // end of media query
+
+/*
+iPHONE 5 MEDIA QUERY
+Want to get fancy for no good reason? Knock yourself out.
+*/
+@media (device-height: 568px) and (-webkit-min-device-pixel-ratio: 2) {
+
+  // iPhone 5 or iPod Touch 5th generation styles (you can include your own file if you want)
+
+}
+
+::-webkit-scrollbar {
+    background: @scrollbar-bg;
+    width: 10px;
+}
+::-webkit-scrollbar-thumb {
+    background: @scrollbar-thumb;
+    border: 1px solid @scrollbar-bg;
+}
+button, input, select, textarea {
+    font-family: inherit;
+    outline: none;
+}
+h1, h2, h3, h4, h5 {
+    margin-top: 0;
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
+	color: @pure-black;
+}
+
+.header {
+	background: lighten(@pure-black, 40%);
+	border-bottom: @blog-bewel solid @pure-black;
+}
+
+.footer {
+	border-top: @blog-bewel solid @footer-copy;
+	color: @footer-copy;
+	font-size: 90%;
+}
+
+.head-nav {
+	// background-color: @blog-nav-bg;
+	// border-bottom: @blog-bewel solid @blog-nav-bg-dark;
+	margin: 0.6em 0;
+	.searchform {
+		float: right;
+		margin-top: 12px;
+		margin-right: 30px;
+		position: relative;
+		.search& {
+			float: left;
+		}
+		> label {
+			display: block;
+			> input[type="text"] {
+				background: transparent;
+				border: medium none;
+				border-bottom: 2px solid @blog-nav-link-color;
+				border-radius: 0;
+				-webkit-appearance: none;
+				width: 250px;
+				color: @blog-nav-link-hover;
+				padding: 14px 34px 6px 10px;
+				.transition(all,0.3s);
+				.search& {
+					color: @blog-nav-link-color;
+				}
+				&:focus {
+					border-bottom-color: @blog-nav-link-hover;
+					.search& {
+						border-bottom-color: @blog-nav-link-color;
+					}
+					& + .glyphicon {
+						color: @blog-nav-link-hover;
+						.search& {
+							color: @blog-nav-link-color;
+						}
+					}
+				}
+				&::-webkit-input-placeholder {
+					color: @blog-nav-link-color;
+					font-size: 100%;
+					opacity: 1;
+				}
+				&:-ms-input-placeholder {
+					color: @blog-nav-link-color;
+					font-size: 100%;
+					opacity: 1;
+				}
+				&::-moz-placeholder {
+					color: @blog-nav-link-color;
+					font-size: 100%;
+					opacity: 1;
+				}
+				&:-moz-placeholder {
+					color: @blog-nav-link-color;
+					font-size: 100%;
+					opacity: 1;
+				}
+			}
+			> .glyphicon {
+				position: absolute;
+				right: 10px;
+				top: 14px;
+				color: @blog-nav-link-color;
+				.transition(all,0.3s);
+			}
+		}
+	}
+}
+
+.top-nav {
+	float: left;
+	> ul {
+		> li {
+			> a {
+				// border-right: 1px solid @blog-nav-bg-dark;
+				// border-bottom: @blog-bewel solid @blog-nav-bg-dark;
+				// margin-bottom: -@blog-bewel;
+				color: @blog-nav-link-color;
+				.blog &, .home & {
+					color: @pure-white;
+				}
+				padding: 30px 30px 10px;
+				&:hover {
+					// border-bottom-color: @blog-nav-link-hover;
+					color: @blog-nav-link-hover;
+					.blog &, .home & {
+						color: @pure-black;
+					}
+				}
+			}
+		}
+	}
+	.glyphicon {
+		position: relative;
+		left: -14px;
+	}
+	.glyph-about .glyphicon {
+		top: 1px;
+	}
+	.glyph-blog .glyphicon {
+		top: 3px;
+	}
+	.glyph-contact .glyphicon {
+		top: 2px;
+	}
+}
+
+.copyright {
+	> a {
+		color: inherit;
+	}
+}
+
+.main-cards {
+	position: relative;
+	width: 100%;
+}
+
+.flat-box {
+	margin-bottom: @flat-box-distance;
+	min-height: 100px;
+	padding: 24px;
+	text-align: center;
+	> h4 {
+		margin-bottom: 0;
+	}
+	> p {
+		margin: 0;
+	}
+	> ul {
+		margin: 0;
+		line-height: 2;
+		&.recent-posts {
+			> li {
+				> a {
+					// display: inline-block;
+					// text-align: left;
+					// white-space: nowrap;
+					// overflow: hidden;
+					// text-overflow: ellipsis;
+					// padding-bottom: 0.5em;
+					opacity: 0.6;
+					> span {
+						color: @blog-color;
+						display: block;
+						font-size: 90%;
+						line-height: 1.4;
+						height: 78px;
+						opacity: 0.6;
+						overflow: hidden;
+						:hover& {
+							opacity: 1;
+						}
+						.fourcol.second & {
+							height: 60px;
+						}
+					}
+					:hover& {
+						opacity: 1;
+					}
+				}
+				> div {
+					font-size: 90%;
+					line-height: 1.4;
+					height: 78px;
+					overflow: hidden;
+					opacity: 0.6;
+					.transition;
+					:hover& {
+						opacity: 1;
+					}
+				}
+				// &:last-child > a {
+				// 	padding-bottom: 0;
+				// }
+			}
+		}
+		&.wp-tag-cloud {
+			> li {
+				display: inline-block;
+				padding-right: 1em;
+			}
+		}
+		> li {
+			> a {
+				text-decoration: none;
+				color: @pure-white;
+				&:hover {
+					color: @pure-black;
+				}
+			}
+		}
+	}
+}
+
+.wp-cat-cloud {
+	padding-top: 0.7em;
+	> li {
+		line-height: 2.5;
+	}
+}
+
+.recent-posts {
+	padding-top: 1em;
+}
+
+.flat-box-yellow {
+	background: @blog-yellow;
+	border-bottom: @blog-bewel solid @blog-yellow-dark;
+	.flat-box;
+}
+.flat-box-orange {
+	background: @blog-orange;
+	border-bottom: @blog-bewel solid @blog-orange-dark;
+	.flat-box;
+}
+.flat-box-red {
+	background: @blog-red;
+	border-bottom: @blog-bewel solid @blog-red-dark;
+	.flat-box;
+}
+.flat-box-green {
+	background: @blog-green;
+	border-bottom: @blog-bewel solid @blog-green-dark;
+	.flat-box;
+}
+.flat-box-mint {
+	background: @blog-mint;
+	border-bottom: @blog-bewel solid @blog-mint-dark;
+	.flat-box;
+}
+.flat-box-aqua {
+	background: @blog-aqua;
+	border-bottom: @blog-bewel solid @blog-aqua-dark;
+	.flat-box;
+}
+.flat-box-blue {
+	background: @blog-blue;
+	border-bottom: @blog-bewel solid @blog-blue-dark;
+	.flat-box;
+}
+.flat-box-purple {
+	background: @blog-purple;
+	border-bottom: @blog-bewel solid @blog-purple-dark;
+	.flat-box;
+}
+.flat-box-pink {
+	background: @blog-pink;
+	border-bottom: @blog-bewel solid @blog-pink-dark;
+	.flat-box;
+}
+.flat-box-carrot {
+	background: @blog-carrot;
+	border-bottom: @blog-bewel solid @blog-carrot-dark;
+	.flat-box;
+}
+.flat-box-concrete {
+	background: @blog-concrete;
+	border-bottom: @blog-bewel solid @blog-concrete-dark;
+	.flat-box;
+}
+.flat-box-asphalt {
+	background: @blog-asphalt;
+	border-bottom: @blog-bewel solid @blog-asphalt-dark;
+	.flat-box;
+}
+
+.info {
+	padding-bottom: 10px;
+	padding-top: 10px;
+	> h1 {
+		> a {
+			color: @pure-white;
+			display: block;
+			&:hover {
+				color: @pure-black;
+			}
+		}
+		.glyphicon {
+			font-size: 80%;
+		    left: 4px;
+		    position: relative;
+		    top: 1px;
+		}
+	}
+	> .h3 {
+		margin-bottom: 0;
+		margin-top: 0.4em;
+		margin-bottom: 0.2em;
+	}
+	> p {
+		font-weight: 100;
+	}
+	> img {
+		max-width: 40%;
+		.border-radius(100%);
+		border: 2px solid white;
+		opacity: 0.9;
+		.transform(rotate(8deg));
+		.transition(all,0.2s);
+	}
+	&:hover {
+		> img {
+			.transform(rotate(10deg));
+		}
+	}
+}
+.info-social {
+	line-height: 2.2;
+    padding-top: 1em;
+	> li {
+		display: inline-block;
+		padding-right: 0.8em;
+		&:last-child {
+			padding-right: 0;
+		}
+		> a {
+			display: block;
+			background: @blog-yellow-dark;
+			border-radius: 100%;
+			width: 2em;
+			height: 2em;
+		}
+	}
+	.icon-google {
+		font-weight: bold;
+		position: relative;
+		left: -1px;
+	}
+}
+
+.box-archives {
+	padding-top: 1em;
+	> select {
+		background: transparent;
+		border: medium none;
+		color: @blog-nav-link-color;
+		width: 60%;
+		> option {
+			background: transparent;
+			border: medium none;
+			color: @blog-nav-link-color;
+		}
+	}
+}
+
+.calendar-archives .cal-nav {
+	background: @blog-aqua-dark;
+}
+
+.calendar-archives .archives-years .year .month.empty {
+	background: @blog-bg;
+}
+
+.calendar-archives .cal-nav .year-nav {
+	&:hover {
+		background: transparent;
+	}
+	> a.year-title:hover {
+		color: @pure-black;
+	}
+	.year-select {
+		box-shadow: 0 0 0px 1px @pure-black;
+		.year.selected {
+			background: @blog-aqua-dark;
+		}
+	}
+	.arrow-down {
+		border: medium none;
+		top: -1px;
+		right: 6px;
+	}
+}
+
+.calendar-archives .cal-nav .next-year {
+	border: medium none;
+	> .glyphicon {
+		position: relative;
+		top: -1px;
+	}
+}
+
+.calendar-archives .cal-nav .prev-year {
+	border: medium none;
+	> .glyphicon {
+		position: relative;
+		top: -1px;
+	}
+}
+
+.article-header {
+	> h3 {
+		font-size: 1.25em;
+		margin-bottom: 0.4em;
+	}
+}
+
+.byline {
+	margin: 0;
+	font-size: 90%;
+	.single-title + & {
+		padding: 0 0 2em;
+		.glyphicon {
+			color: @pure-black;
+			cursor: pointer;
+			display: inline-block;
+			padding-right: 1.8em;
+			padding-left: 0.2em;
+			&:hover {
+				color: @blog-yellow-dark;
+			}
+			&.glyphicon-retweet {
+				font-size: 120%;
+			}
+		}
+	}
+}
+
+.entry-content {
+	.h3 {
+		.single & {
+			padding-top: 2em;
+		}
+	}
+	img.wp-smiley {
+		margin: 0;
+	}
+	> p {
+		line-height: 2;
+		margin-top: 0;
+		margin-bottom: 2em;
+		.single & {
+			margin-bottom: 1em;
+		}
+	}
+	> ul {
+		list-style-type: disc;
+		margin-left: 2em;
+		> li {
+			> ul {
+				list-style-type: circle;
+				margin: 0 0 0 2em;
+			}
+		}
+	}
+	/*code {
+		background: lighten(@blog-yellow-dark, 20%);
+	    border-bottom: @blog-bewel solid @blog-yellow-dark;
+	    color: @pure-black;
+	    display: block;
+	    font-size: 90%;
+	    line-height: 2;
+	    margin: 10px 0;
+	    padding: 0.5em 1em;
+	}*/
+}
+
+.content-list {
+	line-height: 2;
+}
+
+.article-footer {
+	padding-bottom: 20px;
+}
+
+.excerpt-read-more {
+	.glyphicon {
+		font-size: 70%;
+	}
+}
+
+.comments-count {
+	font-size: 0.8em;
+	> span {
+		color: @pure-black;
+	}
+}
+
+.number {
+	padding: 0 0.4em;
+}
+
+.page-numbers {
+	> li {
+		display: inline-block;
+		> .page-numbers {
+			background: @pure-white;
+			border-bottom: @blog-bewel solid darken(@pure-white, 12%);
+			color: @blog-concrete-dark;
+			display: inline-block;
+			font-size: 90%;
+			font-weight: 900;
+			margin-right: 1em;
+			padding: 0.2em 0.9em 0;
+			text-decoration: none;
+			> .glyphicon {
+				font-size: 70%;
+				position: relative;
+				top: -1px;
+			}
+		}
+		> a:hover {
+			border-bottom-color: @blog-concrete-dark;
+		}
+		.current {
+			border-bottom-color: @blog-concrete-dark;
+			cursor: default;
+		}
+	}
+}
+
+.respond-form {
+	margin: 0 auto;
+	width: 60%;
+}
+
+
+#comment-form-elements {
+	> li {
+		> input {
+			background: darken(#efefef, 4%);
+			border-width: 0 0 @blog-bewel 0;
+			border-radius: 0;
+			-webkit-appearance: none;
+			color: @pure-black;
+			font-size: 90%;
+			padding: 12px 14px 10px;
+			min-width: 97.3%;
+			&:focus {
+				background: @pure-white;
+			}
+			&:invalid {
+				border-color: @blog-orange-dark;
+			}
+		}
+	}
+	+ p {
+		> textarea {
+			background: darken(#efefef, 4%);
+			border-width: 0 0 @blog-bewel 0;
+			border-radius: 0;
+			-webkit-appearance: none;
+			color: @pure-black;
+			font-size: 90%;
+			padding: 12px 14px 10px;
+			&:focus {
+				background: @pure-white;
+			}
+			&:invalid {
+				border-color: @blog-orange-dark;
+			}
+		}
+	}
+}
+
+.comment-author {
+	font-size: 95%;
+	> .comment-reply-link {
+		background: @blog-aqua;
+		border-bottom: @blog-bewel solid @blog-aqua-dark;
+		text-transform: uppercase;
+		position: absolute;
+		right: 0;
+		top: 0;
+		opacity: 1;
+		padding: 5px 15px 3px;
+		&:hover {
+			background-color: @blog-blue;
+			border-color: @blog-blue-dark;
+		}
+	}
+	> time {
+		padding-right: 5em;
+	}
+}
+
+.comment_content {
+	font-size: 90%;
+}
+
+.commentlist {
+	li {
+		margin-bottom: 10px;
+		&:not(.depth-1) {
+			margin: 0;
+		}
+	}
+	.even {
+		background: darken(@pure-white, 12%);
+	}
+	.odd {
+		background: darken(@pure-white, 20%);
+	}
+}
+
+.e404-sidebar {
+	> ul {
+		margin-top: 0;
+	}
+	.wp-tag-cloud {
+		font-size: 90%;
+	}
+}
+
+.single {
+	.qtip-default {
+		background-color: @blog-yellow-dark;
+		border-color: @blog-yellow-dark;
+		font-size: 90%;
+	}
+}
+
+.about-content {
+	min-height: 500px;
+}
+
+.recruiters-content {
+	font-size: 90%;
+	> p {
+		margin-bottom: 1em;
+	}
+	> ul {
+		margin-bottom: 2em;
+	}
+	a {
+		color: #37BC9B;
+	}
+}
+
+.i-love {
+	.glyphicon {
+		position: relative;
+		left: 6px;
+		top: 1px;
+		font-size: 80%;
+	}
+}
+
+#container {
+	min-width: 1140px;
+	#content {
+		margin-top: 1.2em;
+		.sharedaddy {
+			font-size: 100%;
+			.sd-block {
+				border: medium none;
+			}
+			.sd-title{
+				font-family: @lato;
+				font-size: 100%;
+				font-weight: normal;
+				margin: 1em 1em 0 0;
+				text-align: left;
+				width: auto;
+				.blog &, .home & {
+					font-size: 72%;
+					letter-spacing: 1px;
+					margin: 1.7em 1em 0 0;
+					text-transform: uppercase;
+				}
+			}
+		}
+		.sd-content {
+			float: left;
+			margin: 0.3em 0 0 0;
+			width: auto;
+			> ul > li {
+				.blog &, .home & {
+					margin-right: 25px !important;
+					&.share-print + li {
+						margin-right: 0 !important;
+					}
+				}
+			 	> a {
+					font-family: @lato;
+					font-size: 71%;
+					text-transform: uppercase;
+					box-shadow: none;
+					background: @pure-white;
+					border-radius: 0;
+					padding: 0.4em 0.6em;
+					border: medium none !important;
+					border-bottom: @blog-bewel solid darken(@pure-white, 12%) !important;
+					&:hover {
+						border-bottom-color: darken(@pure-white, 80%) !important;
+					}
+					> span {
+						opacity: 1;
+					}
+				}
+			}
+		}
+		.sharing-hidden{
+			.inner {
+				border-color: darken(@pure-white, 12%);
+				border-radius: 0 !important;
+				border-width: 0 0 @blog-bewel;
+				box-shadow: none;
+				margin-top: 20px;
+				> ul {
+				 	> li {
+				 		> a {
+							font-family: @lato;
+							font-size: 71%;
+							text-transform: uppercase;
+							box-shadow: none;
+							background: transparent;
+							border-radius: 0;
+							padding: 0.4em;
+							border: medium none !important;
+							border-bottom: @blog-bewel solid darken(@pure-white, 12%) !important;
+							&:hover {
+								border-bottom-color: darken(@pure-white, 80%) !important;
+							}
+							> span {
+								opacity: 1;
+							}
+						}
+				 	}
+				}
+			}
+		}
+	}
+}
+
+.header {
+	.tag & {
+		background: @blog-green;
+		padding-top: 1em;
+		& + .mob-menu {
+			background: @blog-green;
+			// border-bottom: @blog-bewel solid @blog-green-dark;
+		}
+	}
+	.category & {
+		background: @blog-pink;
+		padding-top: 1em;
+		& + .mob-menu {
+			background: @blog-pink;
+			// border-bottom: @blog-bewel solid @blog-pink-dark;
+		}
+	}
+	.date & {
+		background: @blog-aqua;
+		padding-top: 1em;
+		& + .mob-menu {
+			background: @blog-aqua;
+			// border-bottom: @blog-bewel solid @blog-aqua-dark;
+		}
+	}
+	.author &, .single &, .page-template-page-about-php &, .page-template-page-for-recruiters-php & {
+		background: @blog-yellow;
+		padding-top: 1em;
+		& + .mob-menu {
+			background: @blog-yellow;
+			// border-bottom: @blog-bewel solid @blog-yellow-dark;
+		}
+	}
+	.search & {
+		background: @blog-mint;
+		padding-top: 1em;
+		& + .mob-menu {
+			background: @blog-mint;
+			// border-bottom: @blog-bewel solid @blog-mint-dark;
+		}
+	}
+	.error404 & {
+		background: @blog-orange;
+		padding-top: 1em;
+		& + .mob-menu {
+			background: @blog-orange;
+			// border-bottom: @blog-bewel solid @blog-orange-dark;
+		}
+	}
+}
+
+.article-header > h3 > a {
+	.tag & {
+		color: @blog-green;
+		&:hover {
+			color: inherit;
+		}
+	}
+	.category & {
+		color: @blog-pink;
+		&:hover {
+			color: inherit;
+		}
+	}
+	.date & {
+		color: @blog-aqua;
+		&:hover {
+			color: inherit;
+		}
+	}
+	.author & {
+		color: @blog-yellow;
+		&:hover {
+			color: inherit;
+		}
+	}
+	.single & {
+		color: @blog-yellow;
+		&:hover {
+			color: inherit;
+		}
+	}
+	.search & {
+		color: @blog-mint;
+		&:hover {
+			color: inherit;
+		}
+	}
+	.error404 & {
+		color: @blog-orange;
+		&:hover {
+			color: inherit;
+		}
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1029px) {
+	.head-nav {
+		margin-top: 0;
+	}
+	.top-nav {
+		max-width: 60%;
+		> ul {
+			> li {
+				width: 50%;
+				> a {
+					padding-bottom: 0;
+				}
+			}
+		}
+	}
+}
+
+// Maze Styles
+
+.logo {
+	margin-bottom: 0;
+	> a {
+		color: white;
+		line-height: 2;
+	}
+}
+
+.problem-title {
+	margin-bottom: 0.8em;
+}
+
+.problem-box {
+	margin-bottom: 4em;
+	> embed {
+		display: block;
+	}
+}
+
+@maze-box-square: 60px;
+
+.maze-box {
+	float: left;
+	height: @maze-box-square*5;
+	width: @maze-box-square*5;
+	> span {
+		width: @maze-box-square;
+		height: @maze-box-square;
+		display: block;
+		float: left;
+		border: 1px solid white;
+		position: relative;
+		&:after {
+			content: attr(data-cords);
+			font-size: 70%;
+			position: absolute;
+			left: 6%;
+			top: 0;
+		}
+	}
+	> [data-path-open="no"] {
+		background: lighten(#ff0000, 40%);
+	}
+	> [data-path-open="yes"] {
+		background: lighten(#00ff00, 40%);
+	}
+	> [data-divider="yes"] {
+		background: lighten(#ff0000, 26%);
+	}
+	> [data-checking="yes"] {
+		background: lighten(#ffff00, 26%);
+	}
+	> [data-solved="yes"] {
+		// background: lighten(#00ff00, 26%);
+		&:before {
+			content: "✔"; // this is a tick
+			position: absolute;
+			left: 40%;
+			top: 40%;
+		}
+	}
+	> [data-cords="[0,1]"] {
+		> strong {
+			position: absolute;
+			right: 120%;
+			white-space: nowrap;
+		}
+	}
+	> [data-cords="[4,3]"] {
+		> strong {
+			position: absolute;
+			left: 120%;
+			white-space: nowrap;
+		}
+	}
+}
+
+.glossary {
+	padding-top: 1em;
+	> span {
+		float: none;
+		display: inline-block;
+		width: @maze-box-square/2;
+		height: @maze-box-square/2;
+		text-align: center;
+		margin-bottom: 0.2em;
+	}
+	> [data-solved="yes"] {
+		&:before {
+			left: 30%;
+			top: 10%;
+		}
+	}
+}
+
+.plot-solve {
+	> input[type="text"] {
+		background: #e5e5e5;
+		border: medium none;
+		border-bottom: 3px solid #cecece;
+		-webkit-appearance: none;
+		color: @pure-black;
+		font-size: 90%;
+		padding: 12px 14px 10px;
+		width: 97.3%;
+		&:focus {
+			background: @pure-white;
+		}
+		&:invalid {
+			border-color: @blog-orange-dark;
+		}
+	}
+	.button {
+		margin-top: 0;
+	}
+}
+
+/*
+PRINT STYLESHEET
+Feel free to customize this. Remember to add things that won't make
+sense to print at the bottom. Things like nav, ads, and forms should
+be set to display none.
+*/
+@media print {
+
+	@import "_print.less";
+
+} // end of media query
