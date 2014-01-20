@@ -1153,6 +1153,9 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
 			white-space: nowrap;
 		}
 	}
+	> [data-dormant] {
+		background: #f0f2f5;
+	}
 }
 
 .glossary {
@@ -1192,6 +1195,16 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
 	}
 	.button {
 		margin-top: 0;
+	}
+}
+
+.verbose {
+	font-size: 80%;
+	height: 300px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	> p {
+		margin: 0;
 	}
 }
 
