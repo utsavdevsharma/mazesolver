@@ -343,5 +343,20 @@ function blockPath(cords) {
 function startSolving() {
 	window.mz = new mazeBox(coreMaze.entry);
 	moveInTRBL(mz);
-	$('.js-go').addClass('non-func');
+	$('.js-go,.js-go-ex').addClass('non-func');
+}
+
+$('.js-go-ex').click(function(){
+	if ( $(this).is('.non-func') ) { return true; }
+	$btn = $(this);
+	$('.js-inp').val($btn.attr('data-dividers'));
+	plotNewDividers($btn.attr('data-dividers'));
+	startSolvingFromExample($btn);
+});
+
+function startSolvingFromExample(btn) {
+	var entryPoint = btn.attr('data-dividers');
+	window.mz = new mazeBox(entryPoint);
+	moveInTRBL(mz);
+	$('.js-go,.js-go-ex').addClass('non-func');
 }
