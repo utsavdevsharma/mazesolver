@@ -13,72 +13,120 @@ function maze() {
 	this.entry = "[0,1]"; // given entry point
 	this.exit = "[4,3]"; // given exit point
 	this.mazeSize = 5; // given size
-	this.travelledQueue = []; // array to store the nodes of current path traversed to find the solution
+	this.travelledQueue = []; // array to store the nodes of current path in traversal, to find the solution
 	this.prevMazeBox = null; // last verified node and maked step taken
 	this.currentMazeBox = null; // current node under processing
 	this.motionDirections = ['top','right','bottom','left']; // motion directions
 	this.initializedBoxes = []; // array to store already initialized nodes, prevents duplication, saves memory.
-	this.lastOneDiscarded = null; // last node poped from this.travelledQueue[] , if the current path is blocked and this node do not have any more options to take a step
+	this.lastOneDiscarded = null; // last node poped from maze.travelledQueue[] , if the current path is blocked and this node do not have any more options to take a step
 }
+
+/*
+A step is taken, say it moved from [x,y] to [x',y'], now add the last node [x,y] to maze.travelledQueue[]
+*/
 maze.prototype.pushInQueue = function() {
-	if ( this.travelledQueue.last() != this.prevMazeBox ) {
+	if ( this.travelledQueue.last() != this.prevMazeBox ) { // if trying a new path, the last node was already added to maze.travelledQueue[] , do not add that node again.
 		this.travelledQueue.push(this.prevMazeBox);
 	}
 };
+
+/*
+pop last node from maze.travelledQueue[] and store it in maze.lastOneDiscarded
+*/
 maze.prototype.popFromQueue = function() {
 	this.lastOneDiscarded = this.travelledQueue.pop();
-	this.lastOneDiscarded.domElem.removeAttr('data-solved').attr('data-dormant','');
+	this.lastOneDiscarded.domElem.removeAttr('data-solved').attr('data-dormant',''); // remove the visual sign of step taken
 	if ( this.travelledQueue.length == 0 ) {
+	// if in reverse traversal to find a new path, the maze.travelledQueue[] got empty, there can be no more open paths. Give the output of 'blocked'
 		sayBlocked();
 	}
 };
+
+/*
+mark current node as active, store it in maze.currentMazeBox
+param1:: type: node (mazeBox)
+*/
 maze.prototype.markActiveBox = function(box) {
-	box.domElem.attr("data-checking","yes");
+	box.domElem.attr("data-checking","yes"); // add the visual sign of processing
 	this.currentMazeBox = box;
 };
+
+/*
+remove the visual sign of processing
+param1:: type: node (mazeBox)
+*/
 maze.prototype.markChecked = function(box) {
 	box.domElem.removeAttr("data-checking");
 };
+
+/*
+Mark nect node as active, take step, move from [x,y] to [x',y']
+param1:: type: node (mazeBox)
+*/
 maze.prototype.takeStep = function(box) {
-	verbose(box.xy);
-	this.markChecked(box);
-	this.prevMazeBox = box;
-	this.pushInQueue();
-	box.domElem.attr("data-solved","yes");
+	verbose(box.xy); // give verbose of current node co-ordinates
+	this.markChecked(box); // remove the visual sign of processing
+	this.prevMazeBox = box; // last node checked successful, took step ahead from this
+	this.pushInQueue(); // add this node to maze.travelledQueue[]
+	box.domElem.attr("data-solved","yes"); // add visual sign of step taken
 };
+
+/*
+Initialize the core maze
+*/
 window.coreMaze = new maze();
 
+/*
+find the co-ordinates of node just above of given node
+param1:: type: node (mazeBox)
+*/
 function getAboveBox(cords) {
-	var cordsArray = JSON.parse(cords);
-	cordsArray[1] = cordsArray[1]+1;
-	if (cordsArray[1]<coreMaze.mazeSize) { return "["+cordsArray.toString()+"]"; } else { return null; }
+	var cordsArray = JSON.parse(cords); // covert string to arrray, for mathematical operations
+	cordsArray[1] = cordsArray[1]+1; // increase value of y co-ordinate
+	if (cordsArray[1]<coreMaze.mazeSize) { return "["+cordsArray.toString()+"]"; } else { return null; } // if node exists, return the co-ordinates, else return null
 }
 
+/*
+find the co-ordinates of node just below of given node
+param1:: type: node (mazeBox)
+*/
 function getBelowBox(cords) {
-	var cordsArray = JSON.parse(cords);
-	cordsArray[1] = cordsArray[1]-1;
-	if (cordsArray[1]>=0) { return "["+cordsArray.toString()+"]"; } else { return null; }
+	var cordsArray = JSON.parse(cords); // covert string to arrray, for mathematical operations
+	cordsArray[1] = cordsArray[1]-1; // decrease value of y co-ordinate
+	if (cordsArray[1]>=0) { return "["+cordsArray.toString()+"]"; } else { return null; } // if node exists, return the co-ordinates, else return null
 }
 
+/*
+find the co-ordinates of node just right of given node
+param1:: type: node (mazeBox)
+*/
 function getRightBox(cords) {
-	var cordsArray = JSON.parse(cords);
-	cordsArray[0] = cordsArray[0]+1;
-	if (cordsArray[0]<coreMaze.mazeSize) { return "["+cordsArray.toString()+"]"; } else { return null; }
+	var cordsArray = JSON.parse(cords); // covert string to arrray, for mathematical operations
+	cordsArray[0] = cordsArray[0]+1; // increase value of x co-ordinate
+	if (cordsArray[0]<coreMaze.mazeSize) { return "["+cordsArray.toString()+"]"; } else { return null; } // if node exists, return the co-ordinates, else return null
 }
 
+/*
+find the co-ordinates of node just left of given node
+param1:: type: node (mazeBox)
+*/
 function getLeftBox(cords) {
-	var cordsArray = JSON.parse(cords);
-	cordsArray[0] = cordsArray[0]-1;
-	if (cordsArray[0]>=0) { return "["+cordsArray.toString()+"]"; } else { return null; }
+	var cordsArray = JSON.parse(cords); // covert string to arrray, for mathematical operations
+	cordsArray[0] = cordsArray[0]-1; // decrease value of x co-ordinate
+	if (cordsArray[0]>=0) { return "["+cordsArray.toString()+"]"; } else { return null; } // if node exists, return the co-ordinates, else return null
 }
 
+/*
+Definition of mazeBox
+param1:: type: string (co-ordinates array, e.g. "[0,1]")
+*/
 function mazeBox(cords) {
-	this.xy = cords;
-	this.domElem = $('[data-cords="'+cords+'"]');
-	this.open = this.domElem.attr('data-path-open');
-	this.adjacentBoxes = [getAboveBox(cords), getRightBox(cords), getBelowBox(cords), getLeftBox(cords)];
-	this.openOptions = [];
-	this.restrictedTo = [];
+	this.xy = cords; // store the co-ordinates
+	this.domElem = $('[data-cords="'+cords+'"]'); // store the corresponding dom object
+	this.open = this.domElem.attr('data-path-open'); // is this node open or not. Possible values: "yes" | "no"
+	this.adjacentBoxes = [getAboveBox(cords), getRightBox(cords), getBelowBox(cords), getLeftBox(cords)]; // at the time of initialization, also buffer the co-ordinates of all adjacent nodes, in the order of motion: top, right, bottom, left
+	this.openOptions = []; // array to store more open options, say it moved to top direction and right is also open, store that for using next time, if this path gets blocked in future
+	this.restrictedTo = []; // array to store restricted nodes, this path is verified blocked in an old traversal
 }
 
 function moveInTRBL(box) {
