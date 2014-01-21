@@ -353,3 +353,7 @@ function startSolving() {
 	moveInTRBL(mz);
 	$('.js-go,.js-go-ex').addClass('non-func');
 }
+
+$('.js-refresh').click(function(){
+	window.location.reload(true);
+});
