@@ -100,8 +100,8 @@ function moveInTRBL(box) {
 						if ( nextBox.xy==coreMaze.exit ) {
 							if (window.steps) { clearTimeout(window.steps); }
 							coreMaze.takeStep(nextBox);
-							verbose('Solution found');
-							outPut(coreMaze.travelledQueue);
+							verbose('Solution found. Sending outPut.');
+							coreMaze.travelledQueue.forEach(outPut);
 							break traverseDirections;
 						}
 					} else {
@@ -116,7 +116,6 @@ function moveInTRBL(box) {
 			}
 			if ( coreMaze.prevMazeBox != box ) {
 				if (window.steps) { clearTimeout(window.steps); }
-				// console.log("clearTimeout");
 				coreMaze.takeStep(box);
 				verbose('This path is blocked, trying new path.');
 				tryNewPath();
@@ -133,22 +132,17 @@ function stepper() {
 }
 
 function tryNewPath() {
-	// coreMaze.popFromQueue();
 	traverseBack:
 	while(coreMaze.travelledQueue.length) {
 		var lastOne = coreMaze.travelledQueue.last();
 		if( lastOne.openOptions.length ) {
-			// console.log("lastOne");
-			// console.log(coreMaze.lastOneDiscarded);
 			if ( coreMaze.lastOneDiscarded!=null ) {
 				lastOne.restrictedTo.push(coreMaze.lastOneDiscarded);
 			}
-			// console.log(lastOne.xy,lastOne.openOptions,coreMaze.lastOneDiscarded.xy);
 			var delIndex = lastOne.openOptions.indexOf(coreMaze.lastOneDiscarded.xy);
 			if ( delIndex > -1 ) {
 				lastOne.openOptions.splice(delIndex,1);
 			}
-			// console.log(lastOne.xy,lastOne.openOptions,delIndex,coreMaze.travelledQueue);
 			moveInTRBL(lastOne);
 			break traverseBack;
 		} else {
@@ -168,13 +162,18 @@ function verbose(text) {
 }
 
 function outPut(msg) {
-	$('.js-output').append('<p>'+msg+'</p>');
+	if( msg.xy != undefined ){
+		$('.js-output').append('<p>'+msg.xy+'</p>');
+	} else {
+		$('.js-output').append('<p>'+msg+'</p>');
+	}
 }
 
 // ------------------------------------------------------------
 // Below code is for plotting diviers, not used in solving maze
 // ------------------------------------------------------------
 $('.js-go').click(function(){
+	if ( $(this).is('.non-func') ) { return true; }
 	var inpVal = $('.js-inp').val();
 	if (inpVal=="") {
 		verbose('No input recieved, no dividers added, solving maze without any new divider. You can add new dividers in format [2,2]:[2,3];[2,2]:[3,2].')
@@ -194,7 +193,6 @@ function plotNewDividers(cords) { // input in format "[2,2]:[2,3];[2,2]:[3,2]"
 	var dividers = cords.split(";"); // dividers = ["[2,2]:[2,3]", "[2,2]:[3,2]"]
 	traverseDividers:
 	for (var i = dividers.length - 1; i >= 0; i--) {
-		// console.log("Plotting Divider "+dividers[i]);
 		var dividerEnds = dividers[i].split(":"); // dividerEnds = ["[2,2]", "[2,3]"]
 		var dividerStart = dividerEnds[0]; // "[2,2]"
 		var dividerEnd = dividerEnds[1]; // "[2,3]"
@@ -221,13 +219,11 @@ function plotNewDividers(cords) { // input in format "[2,2]:[2,3];[2,2]:[3,2]"
 				} else {
 					var inEqualX = dividerStartArray[0] != dividerEndArray[0];
 					var inEqualY = dividerStartArray[1] != dividerEndArray[1];
-					// console.log("inEqualX "+inEqualX+" inEqualY "+inEqualY);
 					if ( inEqualX && inEqualY ) {
 						verbose("That input is not correct. Diaognal or L shaped dividers are not possible.");
 						break traverseDividers;
 					} else {
 						if (inEqualY) { var traverseOnAxis = 1; } else { var traverseOnAxis = 0; }
-						// console.log("traverseOnAxis "+traverseOnAxis);
 						if (dividerStartArray[traverseOnAxis] < dividerEndArray[traverseOnAxis]){
 							var loopStart = dividerStartArray[traverseOnAxis];
 							var loopEnd = dividerEndArray[traverseOnAxis];
@@ -235,11 +231,8 @@ function plotNewDividers(cords) { // input in format "[2,2]:[2,3];[2,2]:[3,2]"
 							var loopStart = dividerEndArray[traverseOnAxis];
 							var loopEnd = dividerStartArray[traverseOnAxis];
 						}
-						// console.log("loopStart "+loopStart);
-						// console.log("loopEnd "+loopEnd);
 						traverseBoxes:
 						for (var d = loopStart; d <= loopEnd; d++) {
-							// console.log(d);
 							if (inEqualY) {
 								blockPath("["+dividerStartArray[0]+","+d+"]");
 							} else {
@@ -251,7 +244,6 @@ function plotNewDividers(cords) { // input in format "[2,2]:[2,3];[2,2]:[3,2]"
 				}
 			}
 		}
-		// console.log(dividersCreated,dividers.length);
 		if ( dividersCreated == dividers.length ) {
 			startSolving();
 		}
@@ -265,7 +257,6 @@ function checkPointValue(element, index, array) {
 }
 
 function blockPath(cords) {
-	// console.log(cords);
 	var selectorString = '[data-cords="'+cords+'"]'
 	$(selectorString).attr('data-divider','yes').attr('data-path-open','no');
 }
@@ -273,5 +264,5 @@ function blockPath(cords) {
 function startSolving() {
 	window.mz = new mazeBox(coreMaze.entry);
 	moveInTRBL(mz);
-	// $('.js-go').attr('disabled','disabled')
+	$('.js-go').addClass('non-func');
 }

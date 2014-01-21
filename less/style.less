@@ -1163,15 +1163,15 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
 	> span {
 		float: none;
 		display: inline-block;
-		width: @maze-box-square/2;
-		height: @maze-box-square/2;
+		width: @maze-box-square/2.5;
+		height: @maze-box-square/2.5;
 		text-align: center;
 		margin-bottom: 0.2em;
 	}
 	> [data-solved="yes"] {
 		&:before {
-			left: 30%;
-			top: 10%;
+			left: 24%;
+			top: 0%;
 		}
 	}
 }
@@ -1206,6 +1206,14 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
 	> p {
 		margin: 0;
 	}
+}
+
+input[type="button"].non-func {
+	background: #dddddd;
+	color: #bbbbbb;
+	border-color: #cccccc;
+	cursor: default;
+	opacity: 0.4;
 }
 
 /*
