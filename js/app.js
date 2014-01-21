@@ -1,17 +1,24 @@
+/*
+helper utility , adding last function to array prototype so that we can directly get the last element without poping.
+e.g. [20, 30, 40].last() // gives 40
+*/
 Array.prototype.last = function() {
 	return this.slice(-1)[0];
 }
 
+/*
+Definition of a Maze
+*/
 function maze() {
-	this.entry = "[0,1]";
-	this.exit = "[4,3]";
-	this.mazeSize = 5;
-	this.travelledQueue = [];
-	this.prevMazeBox = null;
-	this.currentMazeBox = null;
-	this.motionDirections = ['top','right','bottom','left'];
-	this.initializedBoxes = [];
-	this.lastOneDiscarded = null;
+	this.entry = "[0,1]"; // given entry point
+	this.exit = "[4,3]"; // given exit point
+	this.mazeSize = 5; // given size
+	this.travelledQueue = []; // array to store the nodes of current path traversed to find the solution
+	this.prevMazeBox = null; // last verified node and maked step taken
+	this.currentMazeBox = null; // current node under processing
+	this.motionDirections = ['top','right','bottom','left']; // motion directions
+	this.initializedBoxes = []; // array to store already initialized nodes, prevents duplication, saves memory.
+	this.lastOneDiscarded = null; // last node poped from this.travelledQueue[] , if the current path is blocked and this node do not have any more options to take a step
 }
 maze.prototype.pushInQueue = function() {
 	if ( this.travelledQueue.last() != this.prevMazeBox ) {
