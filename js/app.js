@@ -267,6 +267,14 @@ $('.js-go').click(function(){
 	}
 });
 
+$('.js-go-ex').click(function(){
+	if ( $(this).is('.non-func') ) { return true; }
+	btncords = $(this).attr('data-dividers');
+	$('.js-inp').val(btncords);
+	plotNewDividers(btncords);
+	startSolving()
+});
+
 window.dividersCreated = 0
 function plotNewDividers(cords) { // input in format "[2,2]:[2,3];[2,2]:[3,2]"
 	var dividers = cords.split(";"); // dividers = ["[2,2]:[2,3]", "[2,2]:[3,2]"]
@@ -342,21 +350,6 @@ function blockPath(cords) {
 
 function startSolving() {
 	window.mz = new mazeBox(coreMaze.entry);
-	moveInTRBL(mz);
-	$('.js-go,.js-go-ex').addClass('non-func');
-}
-
-$('.js-go-ex').click(function(){
-	if ( $(this).is('.non-func') ) { return true; }
-	$btn = $(this);
-	$('.js-inp').val($btn.attr('data-dividers'));
-	plotNewDividers($btn.attr('data-dividers'));
-	startSolvingFromExample($btn);
-});
-
-function startSolvingFromExample(btn) {
-	var entryPoint = btn.attr('data-dividers');
-	window.mz = new mazeBox(entryPoint);
 	moveInTRBL(mz);
 	$('.js-go,.js-go-ex').addClass('non-func');
 }
