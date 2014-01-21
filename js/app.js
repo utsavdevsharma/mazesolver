@@ -44,7 +44,7 @@ maze.prototype.popFromQueue = function() {
 
 /*
 mark current node as active, store it in maze.currentMazeBox
-param1:: type: node (mazeBox)
+param1::  type: node (mazeBox)
 */
 maze.prototype.markActiveBox = function(box) {
 	box.domElem.attr("data-checking","yes"); // add the visual sign of processing
@@ -53,7 +53,7 @@ maze.prototype.markActiveBox = function(box) {
 
 /*
 remove the visual sign of processing
-param1:: type: node (mazeBox)
+param1::  type: node (mazeBox)
 */
 maze.prototype.markChecked = function(box) {
 	box.domElem.removeAttr("data-checking");
@@ -61,7 +61,7 @@ maze.prototype.markChecked = function(box) {
 
 /*
 Mark nect node as active, take step, move from [x,y] to [x',y']
-param1:: type: node (mazeBox)
+param1::  type: node (mazeBox)
 */
 maze.prototype.takeStep = function(box) {
 	verbose(box.xy); // give verbose of current node co-ordinates
@@ -78,7 +78,7 @@ window.coreMaze = new maze();
 
 /*
 find the co-ordinates of node just above of given node
-param1:: type: node (mazeBox)
+param1::  type: node (mazeBox)
 */
 function getAboveBox(cords) {
 	var cordsArray = JSON.parse(cords); // covert string to arrray, for mathematical operations
@@ -88,7 +88,7 @@ function getAboveBox(cords) {
 
 /*
 find the co-ordinates of node just below of given node
-param1:: type: node (mazeBox)
+param1::  type: node (mazeBox)
 */
 function getBelowBox(cords) {
 	var cordsArray = JSON.parse(cords); // covert string to arrray, for mathematical operations
@@ -98,7 +98,7 @@ function getBelowBox(cords) {
 
 /*
 find the co-ordinates of node just right of given node
-param1:: type: node (mazeBox)
+param1::  type: node (mazeBox)
 */
 function getRightBox(cords) {
 	var cordsArray = JSON.parse(cords); // covert string to arrray, for mathematical operations
@@ -108,7 +108,7 @@ function getRightBox(cords) {
 
 /*
 find the co-ordinates of node just left of given node
-param1:: type: node (mazeBox)
+param1::  type: node (mazeBox)
 */
 function getLeftBox(cords) {
 	var cordsArray = JSON.parse(cords); // covert string to arrray, for mathematical operations
@@ -118,7 +118,7 @@ function getLeftBox(cords) {
 
 /*
 Definition of mazeBox
-param1:: type: string (co-ordinates array, e.g. "[0,1]")
+param1::  type: string (co-ordinates array, e.g. "[0,1]")
 */
 function mazeBox(cords) {
 	this.xy = cords; // store the co-ordinates
@@ -126,40 +126,45 @@ function mazeBox(cords) {
 	this.open = this.domElem.attr('data-path-open'); // is this node open or not. Possible values: "yes" | "no"
 	this.adjacentBoxes = [getAboveBox(cords), getRightBox(cords), getBelowBox(cords), getLeftBox(cords)]; // at the time of initialization, also buffer the co-ordinates of all adjacent nodes, in the order of motion: top, right, bottom, left
 	this.openOptions = []; // array to store more open options, say it moved to top direction and right is also open, store that for using next time, if this path gets blocked in future
-	this.restrictedTo = []; // array to store restricted nodes, this path is verified blocked in an old traversal
+	this.restrictedTo = []; // array to store restricted nodes, do not move on this node, this path is verified blocked in an old traversal
 }
 
+/*
+move to next open node, in the order of motion: top, right, bottom, left
+param1::  type: node (mazeBox)
+*/
 function moveInTRBL(box) {
-	coreMaze.markActiveBox(box);
-	traverseDirections:
+	coreMaze.markActiveBox(box); // mark this node active
+	traverseDirections: // label for breaking loop in b/w
 	for (var i = 0; i < coreMaze.motionDirections.length; i++) {
-		var direction = coreMaze.motionDirections[i];
-		var nextBox = null;
-		if ( direction && box.adjacentBoxes[i] != null ) {
+		var direction = coreMaze.motionDirections[i]; // current direction of motion
+		var nextBox = null; // variable to store next box under processing (next node object)
+		if ( direction && box.adjacentBoxes[i] != null ) { // is there any node in this direction ?
 			if ( $('[data-cords="'+box.adjacentBoxes[i]+'"]').attr('data-obj') ) {
+				// if the next node is already initialized, get that object, do not re-initialize, save memory
 				nextBox = coreMaze.initializedBoxes[$('[data-cords="'+box.adjacentBoxes[i]+'"]').attr('data-obj')];
 			} else {
-				nextBox = new mazeBox(box.adjacentBoxes[i]);
+				nextBox = new mazeBox(box.adjacentBoxes[i]); // initialize the next node object
 			}
 		}
-		if (nextBox != null) {
+		if (nextBox != null) { // if we have a next node object
 			if (
-				nextBox.open == "yes"
-				&& coreMaze.travelledQueue.indexOf(nextBox) == -1
-				&& box.restrictedTo.indexOf(nextBox) == -1 
+				nextBox.open == "yes" // if next node is open
+				&& coreMaze.travelledQueue.indexOf(nextBox) == -1 // if next node is not in current travel queue. This prevents intersections in path
+				&& box.restrictedTo.indexOf(nextBox) == -1 // if next node is not restricted to move to. Prevents traversal on old verified blocked paths
 				)
 			{
-					if ( box != coreMaze.prevMazeBox ) {
-						coreMaze.takeStep(box);
-						coreMaze.markActiveBox(nextBox);
-						if ( nextBox.xy==coreMaze.exit ) {
-							if (window.steps) { clearTimeout(window.steps); }
-							coreMaze.takeStep(nextBox);
-							verbose('Solution found. Sending outPut.');
-							coreMaze.travelledQueue.forEach(outPut);
-							break traverseDirections;
+					if ( box != coreMaze.prevMazeBox ) { // if a step is taken from current node, do not take same step again. Else buffer the more open options
+						coreMaze.takeStep(box); // take the step
+						coreMaze.markActiveBox(nextBox); // mark next open box as under processing
+						if ( nextBox.xy==coreMaze.exit ) { // if in traversal, exit point is reached ?
+							if (window.steps) { clearTimeout(window.steps); } // clear animated steps in ui
+							coreMaze.takeStep(nextBox); // take the LAST STEP ! Solution Found !!
+							verbose('Solution found. Sending output.');
+							coreMaze.travelledQueue.forEach(outPut); // give output in required format, print [x,y] of each node traversed in current successful path
+							break traverseDirections; // exit loop, no more traversal required
 						}
-					} else {
+					} else { // Else buffer the more open options
 						box.openOptions.push(nextBox.xy);
 					}
 			}
