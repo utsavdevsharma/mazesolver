@@ -13,6 +13,7 @@ function maze() {
 	this.initializedBoxes = [];
 	this.lastOneDiscarded = null;
 	this.stillHaveSomePaths = true;
+	this.firstNodeWithOpenOptions = null;
 }
 maze.prototype.pushInQueue = function() {
 	if ( this.travelledQueue.last() != this.prevMazeBox ) {
@@ -22,6 +23,9 @@ maze.prototype.pushInQueue = function() {
 maze.prototype.popFromQueue = function() {
 	this.lastOneDiscarded = this.travelledQueue.pop();
 	this.lastOneDiscarded.domElem.removeAttr('data-solved').attr('data-dormant','');
+	if ( this.travelledQueue.length == 0 ) {
+		sayBlocked();
+	}
 };
 maze.prototype.markActiveBox = function(box) {
 	box.domElem.attr("data-checking","yes");
@@ -104,6 +108,9 @@ function moveInTRBL(box) {
 						}
 					} else {
 						box.openOptions.push(nextBox.xy);
+						if ( coreMaze.firstNodeWithOpenOptions == null ) {
+							coreMaze.firstNodeWithOpenOptions = box;
+						}
 					}
 			}
 		}
@@ -142,27 +149,25 @@ function tryNewPath() {
 			if ( coreMaze.lastOneDiscarded!=null ) {
 				lastOne.restrictedTo.push(coreMaze.lastOneDiscarded);
 			}
-			console.log(lastOne.xy,lastOne.openOptions,coreMaze.lastOneDiscarded.xy);
+			// console.log(lastOne.xy,lastOne.openOptions,coreMaze.lastOneDiscarded.xy);
 			var delIndex = lastOne.openOptions.indexOf(coreMaze.lastOneDiscarded.xy);
-			if (delIndex>-1) { lastOne.openOptions.splice(delIndex,1); }
-			console.log(lastOne.xy,lastOne.openOptions,delIndex,coreMaze.travelledQueue);
+			if ( delIndex > -1 ) {
+				lastOne.openOptions.splice(delIndex,1);
+			}
+			// console.log(lastOne.xy,lastOne.openOptions,delIndex,coreMaze.travelledQueue);
 			coreMaze.stillHaveSomePaths = true;
 			moveInTRBL(lastOne);
 			break traverseBack;
 		} else {
-			// console.log("lastOnepoped");
 			coreMaze.popFromQueue();
 		}
 	}
-	setTimeout(sayBlocked,10000);
 }
 
 function sayBlocked() {
-	if (!coreMaze.stillHaveSomePaths) {
-		if (window.steps) { clearTimeout(window.steps); }
-		verbose('all possible paths blocked');
-		outPut('blocked');
-	}
+	if (window.steps) { clearTimeout(window.steps); }
+	verbose('All possible paths are blocked. Sending output.');
+	outPut('blocked');
 }
 
 function verbose(text) {
