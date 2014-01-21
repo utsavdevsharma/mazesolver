@@ -35,7 +35,7 @@ pop last node from maze.travelledQueue[] and store it in maze.lastOneDiscarded
 */
 maze.prototype.popFromQueue = function() {
 	this.lastOneDiscarded = this.travelledQueue.pop();
-	this.lastOneDiscarded.domElem.removeAttr('data-solved').attr('data-dormant',''); // remove the visual sign of step taken
+	this.lastOneDiscarded.domElem.removeAttr('data-solved').attr('data-dormant',''); // remove the visual sign of step taken, make it visually dormant
 	if ( this.travelledQueue.length == 0 ) {
 	// if in reverse traversal to find a new path, the maze.travelledQueue[] got empty, there can be no more open paths. Give the output of 'blocked'
 		sayBlocked();
@@ -169,17 +169,17 @@ function moveInTRBL(box) {
 					}
 			}
 		}
-		if ( i == (coreMaze.motionDirections.length-1) ) {
+		if ( i == (coreMaze.motionDirections.length-1) ) { // if nodes in all directions are checked
 			if ( !(box.domElem.attr('data-obj')) ) {
-				box.domElem.attr('data-obj',coreMaze.initializedBoxes.length);
-				coreMaze.initializedBoxes.push(box);
+				box.domElem.attr('data-obj',coreMaze.initializedBoxes.length); // this node object is saved at which index in array of maze.initializedBoxes[]
+				coreMaze.initializedBoxes.push(box); // now all the open options are buffered, save this node object for future use, This prevents re-initialization in future, saves memory.
 			}
-			if ( coreMaze.prevMazeBox != box ) {
-				if (window.steps) { clearTimeout(window.steps); }
-				coreMaze.takeStep(box);
+			if ( coreMaze.prevMazeBox != box ) { // step not taken yet ?
+				if (window.steps) { clearTimeout(window.steps); } // clear animated steps in ui
+				coreMaze.takeStep(box); // this node was open but there is no next option, mark the path successful till this node. The optionless nodes will be marked dormant later one by one in reverse traversal
 				verbose('This path is blocked, trying new path.');
-				tryNewPath();
-			} else {
+				tryNewPath(); // in the last iteration of loop, if there is no open path found, its time to try new path to find the solution
+			} else { // if a step is taken, re-initialize animated steps in ui
 				if (window.steps) { clearTimeout(window.steps); }
 				window.steps = setTimeout(stepper,800);
 			}
@@ -187,40 +187,52 @@ function moveInTRBL(box) {
 	}
 }
 
-function stepper() {
+function stepper() { // for taking animated steps in ui, after fixed delays
 	moveInTRBL(coreMaze.currentMazeBox);
 }
 
+/*
+Lets try a new path
+*/
 function tryNewPath() {
 	traverseBack:
-	while(coreMaze.travelledQueue.length) {
-		var lastOne = coreMaze.travelledQueue.last();
-		if( lastOne.openOptions.length ) {
+	while(coreMaze.travelledQueue.length) { // old path is blocked, now if there are nodes in travelled queue, start reverse checking to find nearest node with open options
+		var lastOne = coreMaze.travelledQueue.last(); // take last node from traversed path
+		if( lastOne.openOptions.length ) { // if that last node have some open options
 			if ( coreMaze.lastOneDiscarded!=null ) {
-				lastOne.restrictedTo.push(coreMaze.lastOneDiscarded);
+				lastOne.restrictedTo.push(coreMaze.lastOneDiscarded); // in reverse checking, if previous poped node did not had open options, add that to restricted.
 			}
 			var delIndex = lastOne.openOptions.indexOf(coreMaze.lastOneDiscarded.xy);
-			if ( delIndex > -1 ) {
+			if ( delIndex > -1 ) { // in reverse checking, if previous poped node did not had any open options and it existed in list of open options of current node, remove it from the list, there is no point in going to a node which do not have any open options further.
 				lastOne.openOptions.splice(delIndex,1);
 			}
-			moveInTRBL(lastOne);
+			moveInTRBL(lastOne); // if the current poped node have open options to go, lets try that, start checking the new path
 			break traverseBack;
 		} else {
-			coreMaze.popFromQueue();
+			coreMaze.popFromQueue(); // pop the last node for reverse checking to find the nearest node with open options
 		}
 	}
 }
 
+/*
+All possible paths are blocked. Send output of 'blocked'
+*/
 function sayBlocked() {
 	if (window.steps) { clearTimeout(window.steps); }
 	verbose('All possible paths are blocked. Sending output.');
 	outPut('blocked');
 }
 
+/*
+Print verbose at ui
+*/
 function verbose(text) {
 	$('.js-verbose').append('<p>'+text+'</p>').scrollTop('1000');
 }
 
+/*
+Print output at ui
+*/
 function outPut(msg) {
 	if( msg.xy != undefined ){
 		$('.js-output').append('<p>'+msg.xy+'</p>');
@@ -229,9 +241,10 @@ function outPut(msg) {
 	}
 }
 
-// ------------------------------------------------------------
-// Below code is for plotting diviers, not used in solving maze
-// ------------------------------------------------------------
+
+// ----------------------------------------------------------------------
+// Below code is for plotting diviers, it is not used in solving the maze
+// ----------------------------------------------------------------------
 $('.js-go').click(function(){
 	if ( $(this).is('.non-func') ) { return true; }
 	var inpVal = $('.js-inp').val();
