@@ -25,6 +25,7 @@ maze.prototype.markChecked = function(box) {
 	box.domElem.removeAttr("data-checking");
 };
 maze.prototype.takeStep = function(box) {
+	verbose(box.xy);
 	this.markChecked(box);
 	this.prevMazeBox = box;
 	this.pushInQueue();
@@ -60,23 +61,18 @@ function mazeBox(cords) {
 	this.xy = cords;
 	this.domElem = $('[data-cords="'+cords+'"]');
 	this.open = this.domElem.attr('data-path-open');
-	this.aboveBox = getAboveBox(cords);
-	this.rightBox = getRightBox(cords);
-	this.belowBox = getBelowBox(cords);
-	this.leftBox = getLeftBox(cords);
-	this.adjacentBoxes = [this.aboveBox, this.rightBox, this.belowBox, this.leftBox];
+	this.adjacentBoxes = [getAboveBox(cords), getRightBox(cords), getBelowBox(cords), getLeftBox(cords)];
 	this.openOptions = [];
 	this.restrictedTo = [];
 }
 
 function moveInTRBL(box) {
-	verbose(box.xy);
 	coreMaze.markActiveBox(box);
 	traverseDirections:
 	for (var i = 0; i < coreMaze.motionDirections.length; i++) {
 		var direction = coreMaze.motionDirections[i];
-		var nextBox = undefined;
-		if ( direction && box.adjacentBoxes[i] ) {
+		var nextBox = null;
+		if ( direction && box.adjacentBoxes[i] != null ) {
 			if ( $('[data-cords="'+box.adjacentBoxes[i]+'"]').attr('data-obj') ) {
 				nextBox = coreMaze.initializedBoxes[$('[data-cords="'+box.adjacentBoxes[i]+'"]').attr('data-obj')];
 			} else {
@@ -84,50 +80,60 @@ function moveInTRBL(box) {
 			}
 		}
 		// console.log(nextBox,coreMaze.currentMazeBox,direction,coreMaze.travelledQueue.indexOf(nextBox));
-		if (nextBox != undefined) {
+		if (nextBox != null) {
 			// console.log(nextBox);
-			// if (coreMaze.prevMazeBox) { console.log(coreMaze.prevMazeBox); } else { console.log(undefined); }
-			if ( coreMaze.currentMazeBox == box
+			// if (coreMaze.prevMazeBox) { console.log(coreMaze.prevMazeBox); } else { console.log(null); }
+			if ( /*coreMaze.currentMazeBox == box
+				&& */
+				nextBox.open == "yes"
 				&& coreMaze.travelledQueue.indexOf(nextBox) == -1
-				&& box.restrictedTo.indexOf(nextBox) == -1 ) {
-				coreMaze.markActiveBox(nextBox);
+				&& box.restrictedTo.indexOf(nextBox) == -1 
+				)
+			{
+				// coreMaze.markActiveBox(nextBox);
 				// console.log(coreMaze);
-				if (coreMaze.currentMazeBox.open=="yes") {
-					coreMaze.takeStep(box);
+				// if (coreMaze.currentMazeBox.open=="yes") {
 					// verbose(nextBox.xy);
-					if ( nextBox.xy==coreMaze.exit ) {
-						clearTimeout(steps);
-						verbose('Solution found');
-						coreMaze.takeStep(nextBox);
-						outPut(coreMaze.travelledQueue);
-						break traverseDirections;
+					if ( box != coreMaze.prevMazeBox ) {
+						coreMaze.takeStep(box);
+						coreMaze.markActiveBox(nextBox);
+						if ( nextBox.xy==coreMaze.exit ) {
+							if (window.steps) { clearTimeout(window.steps); }
+							coreMaze.takeStep(nextBox);
+							verbose('Solution found');
+							outPut(coreMaze.travelledQueue);
+							break traverseDirections;
+						}
+					} else {
+						box.openOptions.push(nextBox.xy);
 					}
 					// console.log(coreMaze);
-				} else {
+				/*} else {
 					// console.log(coreMaze);
 					coreMaze.markChecked(nextBox);
 					coreMaze.markActiveBox(box);
-				}
-			} else {
+				}*/
+			}/* else {
 				if (nextBox.open=="yes" &&
 					coreMaze.travelledQueue.indexOf(nextBox) == -1 &&
 					box.restrictedTo.indexOf(nextBox) == -1) {
 					box.openOptions.push(nextBox.xy);
 				}
-			}
+			}*/
 		}
 		if (i==coreMaze.motionDirections.length-1) {
 			if ( !(box.domElem.attr('data-obj')) ) {
 				box.domElem.attr('data-obj',coreMaze.initializedBoxes.length);
 				coreMaze.initializedBoxes.push(box);
 			}
-			if ( coreMaze.currentMazeBox == box ) {
-				clearTimeout(steps);
+			if ( coreMaze.prevMazeBox != box ) {
+				if (window.steps) { clearTimeout(window.steps); }
 				// console.log("clearTimeout");
 				coreMaze.takeStep(box);
 				verbose('This path is blocked, trying new path');
 				tryNewPath();
 			} else {
+				if (window.steps) { clearTimeout(window.steps); }
 				window.steps = setTimeout(stepper,800);
 			}
 		}
@@ -160,7 +166,7 @@ function tryNewPath() {
 		}
 	};
 	if (!coreMaze.stillHaveSomePaths) {
-		clearTimeout(steps);
+		if (window.steps) { clearTimeout(window.steps); }
 		verbose('all possible paths blocked');
 		outPut('blocked');
 	}
