@@ -135,6 +135,12 @@ param1::  type: node (mazeBox)
 */
 function moveInTRBL(box) {
 	coreMaze.markActiveBox(box); // mark this node active
+	if ( box.xy == coreMaze.entry && box.open == "no" ) { // if entry point is blocked itself, no solution can be found, exit and send output
+		verbose("Entry point is blocked itself. No solution can be found, exiting.");
+		coreMaze.markChecked(box);
+		sayBlocked();
+		return;
+	}
 	traverseDirections: // label for breaking loop in b/w
 	for (var i = 0; i < coreMaze.motionDirections.length; i++) {
 		var direction = coreMaze.motionDirections[i]; // current direction of motion
@@ -271,7 +277,7 @@ function plotNewDividers(cords) { // input in format "[2,2]:[2,3];[2,2]:[3,2]"
 		var dividerEnd = dividerEnds[1]; // "[2,3]"
 
 		if ( dividerEnds.length != 2 || $.trim(dividerStart) == "" || $.trim(dividerEnd) == "" ) {
-			verbose("That input is not correct. Co-ordinates can not be blank and there can be only two set of them.");
+			verbose("That input is not correct. Co-ordinates can not be blank and there can be only two set of them marking start and end of divider.");
 			break traverseDividers;
 		} else {
 			try {
@@ -293,7 +299,7 @@ function plotNewDividers(cords) { // input in format "[2,2]:[2,3];[2,2]:[3,2]"
 					var inEqualX = dividerStartArray[0] != dividerEndArray[0];
 					var inEqualY = dividerStartArray[1] != dividerEndArray[1];
 					if ( inEqualX && inEqualY ) {
-						verbose("That input is not correct. Diaognal or L shaped dividers are not possible.");
+						verbose("That input is not correct. Diaognal or L shaped divider are not possible in one. Try two or more dividers.");
 						break traverseDividers;
 					} else {
 						if (inEqualY) { var traverseOnAxis = 1; } else { var traverseOnAxis = 0; }
