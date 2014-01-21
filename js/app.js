@@ -12,8 +12,6 @@ function maze() {
 	this.motionDirections = ['top','right','bottom','left'];
 	this.initializedBoxes = [];
 	this.lastOneDiscarded = null;
-	this.stillHaveSomePaths = true;
-	this.firstNodeWithOpenOptions = null;
 }
 maze.prototype.pushInQueue = function() {
 	if ( this.travelledQueue.last() != this.prevMazeBox ) {
@@ -108,9 +106,6 @@ function moveInTRBL(box) {
 						}
 					} else {
 						box.openOptions.push(nextBox.xy);
-						if ( coreMaze.firstNodeWithOpenOptions == null ) {
-							coreMaze.firstNodeWithOpenOptions = box;
-						}
 					}
 			}
 		}
@@ -139,7 +134,6 @@ function stepper() {
 
 function tryNewPath() {
 	// coreMaze.popFromQueue();
-	coreMaze.stillHaveSomePaths = false;
 	traverseBack:
 	while(coreMaze.travelledQueue.length) {
 		var lastOne = coreMaze.travelledQueue.last();
@@ -155,7 +149,6 @@ function tryNewPath() {
 				lastOne.openOptions.splice(delIndex,1);
 			}
 			// console.log(lastOne.xy,lastOne.openOptions,delIndex,coreMaze.travelledQueue);
-			coreMaze.stillHaveSomePaths = true;
 			moveInTRBL(lastOne);
 			break traverseBack;
 		} else {
