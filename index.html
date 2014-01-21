@@ -97,7 +97,10 @@
                     </div>
                     <h3 class="problem-title">The Solution Design Guide</h3>
                     <div class="problem-box">
-                        The given maze is of size 5x5
+                        The given maze is of fixed size 5x5, the entry and exit points are also fixed. New dividers can be added and output is required in a format. We need to solve this maze.<br><br>
+                        <u>We will be using the wall follower algorithm, the left-hand rule.</u> The given example suggests the approach of direction based motion in order of top, right, bottom, left. We need to traverse from entry to exit point, any path is equally good. Now starting from entry point, we will check each node for its adjacent nodes. First we will check the node just above of current node, then the just right node, then the just below node and lastly the just left node. The adjacent nodes are checked with all the conditions, if we can move to it or not. If yes, we move to the first adjacent node fulfiling these conditions and buffer the other adjacent nodes as other open options for future use. We keep on repeting these steps untill we reach the exit point.<br>
+                        If from a node, there is no next open option, it means the current path is blocked. Now we need to try a new path. The new path should start from the latest node which have other open options. Start the reverse checking of the traversed queue, stop at the node which have other open options. Now step to the other open node and discard the unseful part of old queue. From this new node restart the normal traversal.
+                        If all the nodes have been traversed and in the reverse checking, travelled queue got empty, it means we do not have a slotion for the current maze.
                     </div>
                     <h3 class="problem-title">The Code (app.js)</h3>
                     <div class="embed-script">
