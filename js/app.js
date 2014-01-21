@@ -1,3 +1,7 @@
+Array.prototype.last = function() {
+	return this.slice(-1)[0];
+}
+
 function maze() {
 	this.entry = "[0,1]";
 	this.exit = "[4,3]";
@@ -11,7 +15,9 @@ function maze() {
 	this.stillHaveSomePaths = true;
 }
 maze.prototype.pushInQueue = function() {
-	this.travelledQueue.push(this.prevMazeBox);
+	if ( this.travelledQueue.last() != this.prevMazeBox ) {
+		this.travelledQueue.push(this.prevMazeBox);
+	}
 };
 maze.prototype.popFromQueue = function() {
 	this.lastOneDiscarded = this.travelledQueue.pop();
@@ -79,21 +85,13 @@ function moveInTRBL(box) {
 				nextBox = new mazeBox(box.adjacentBoxes[i]);
 			}
 		}
-		// console.log(nextBox,coreMaze.currentMazeBox,direction,coreMaze.travelledQueue.indexOf(nextBox));
 		if (nextBox != null) {
-			// console.log(nextBox);
-			// if (coreMaze.prevMazeBox) { console.log(coreMaze.prevMazeBox); } else { console.log(null); }
-			if ( /*coreMaze.currentMazeBox == box
-				&& */
+			if (
 				nextBox.open == "yes"
 				&& coreMaze.travelledQueue.indexOf(nextBox) == -1
 				&& box.restrictedTo.indexOf(nextBox) == -1 
 				)
 			{
-				// coreMaze.markActiveBox(nextBox);
-				// console.log(coreMaze);
-				// if (coreMaze.currentMazeBox.open=="yes") {
-					// verbose(nextBox.xy);
 					if ( box != coreMaze.prevMazeBox ) {
 						coreMaze.takeStep(box);
 						coreMaze.markActiveBox(nextBox);
@@ -107,21 +105,9 @@ function moveInTRBL(box) {
 					} else {
 						box.openOptions.push(nextBox.xy);
 					}
-					// console.log(coreMaze);
-				/*} else {
-					// console.log(coreMaze);
-					coreMaze.markChecked(nextBox);
-					coreMaze.markActiveBox(box);
-				}*/
-			}/* else {
-				if (nextBox.open=="yes" &&
-					coreMaze.travelledQueue.indexOf(nextBox) == -1 &&
-					box.restrictedTo.indexOf(nextBox) == -1) {
-					box.openOptions.push(nextBox.xy);
-				}
-			}*/
+			}
 		}
-		if (i==coreMaze.motionDirections.length-1) {
+		if ( i == (coreMaze.motionDirections.length-1) ) {
 			if ( !(box.domElem.attr('data-obj')) ) {
 				box.domElem.attr('data-obj',coreMaze.initializedBoxes.length);
 				coreMaze.initializedBoxes.push(box);
@@ -130,7 +116,7 @@ function moveInTRBL(box) {
 				if (window.steps) { clearTimeout(window.steps); }
 				// console.log("clearTimeout");
 				coreMaze.takeStep(box);
-				verbose('This path is blocked, trying new path');
+				verbose('This path is blocked, trying new path.');
 				tryNewPath();
 			} else {
 				if (window.steps) { clearTimeout(window.steps); }
@@ -146,17 +132,20 @@ function stepper() {
 
 function tryNewPath() {
 	// coreMaze.popFromQueue();
+	coreMaze.stillHaveSomePaths = false;
 	traverseBack:
 	while(coreMaze.travelledQueue.length) {
-		coreMaze.stillHaveSomePaths = false;
-		var lastOne = coreMaze.travelledQueue[coreMaze.travelledQueue.length-1];
+		var lastOne = coreMaze.travelledQueue.last();
 		if( lastOne.openOptions.length ) {
 			// console.log("lastOne");
 			// console.log(coreMaze.lastOneDiscarded);
-			lastOne.restrictedTo.push(coreMaze.lastOneDiscarded);
+			if ( coreMaze.lastOneDiscarded!=null ) {
+				lastOne.restrictedTo.push(coreMaze.lastOneDiscarded);
+			}
+			console.log(lastOne.xy,lastOne.openOptions,coreMaze.lastOneDiscarded.xy);
 			var delIndex = lastOne.openOptions.indexOf(coreMaze.lastOneDiscarded.xy);
-			// console.log(delIndex,lastOne.openOptions);
 			if (delIndex>-1) { lastOne.openOptions.splice(delIndex,1); }
+			console.log(lastOne.xy,lastOne.openOptions,delIndex,coreMaze.travelledQueue);
 			coreMaze.stillHaveSomePaths = true;
 			moveInTRBL(lastOne);
 			break traverseBack;
@@ -164,7 +153,11 @@ function tryNewPath() {
 			// console.log("lastOnepoped");
 			coreMaze.popFromQueue();
 		}
-	};
+	}
+	setTimeout(sayBlocked,10000);
+}
+
+function sayBlocked() {
 	if (!coreMaze.stillHaveSomePaths) {
 		if (window.steps) { clearTimeout(window.steps); }
 		verbose('all possible paths blocked');
