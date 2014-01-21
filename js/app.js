@@ -30,7 +30,7 @@ maze.prototype.takeStep = function(box) {
 	this.pushInQueue();
 	box.domElem.attr("data-solved","yes");
 };
-var coreMaze = new maze();
+window.coreMaze = new maze();
 
 function getAboveBox(cords) {
 	var cordsArray = JSON.parse(cords);
@@ -64,43 +64,23 @@ function mazeBox(cords) {
 	this.rightBox = getRightBox(cords);
 	this.belowBox = getBelowBox(cords);
 	this.leftBox = getLeftBox(cords);
+	this.adjacentBoxes = [this.aboveBox, this.rightBox, this.belowBox, this.leftBox];
 	this.openOptions = [];
-	this.restrictedFrom = [];
+	this.restrictedTo = [];
 }
 
 function moveInTRBL(box) {
-	// verbose(box.xy);
+	verbose(box.xy);
 	coreMaze.markActiveBox(box);
 	traverseDirections:
 	for (var i = 0; i < coreMaze.motionDirections.length; i++) {
 		var direction = coreMaze.motionDirections[i];
 		var nextBox = undefined;
-		if (direction=='top' && box.aboveBox) {
-			if ( $('[data-cords="'+box.aboveBox+'"]').attr('data-obj') ) {
-				nextBox = coreMaze.initializedBoxes[$('[data-cords="'+box.aboveBox+'"]').attr('data-obj')]
+		if ( direction && box.adjacentBoxes[i] ) {
+			if ( $('[data-cords="'+box.adjacentBoxes[i]+'"]').attr('data-obj') ) {
+				nextBox = coreMaze.initializedBoxes[$('[data-cords="'+box.adjacentBoxes[i]+'"]').attr('data-obj')];
 			} else {
-				nextBox = new mazeBox(box.aboveBox); 
-			}
-		}
-		else if (direction=='right' && box.rightBox) {
-			if ( $('[data-cords="'+box.rightBox+'"]').attr('data-obj') ) {
-				nextBox = coreMaze.initializedBoxes[$('[data-cords="'+box.rightBox+'"]').attr('data-obj')]
-			} else {
-				nextBox = new mazeBox(box.rightBox); 
-			}
-		}
-		else if (direction=='bottom' && box.belowBox) {
-			if ( $('[data-cords="'+box.belowBox+'"]').attr('data-obj') ) {
-				nextBox = coreMaze.initializedBoxes[$('[data-cords="'+box.belowBox+'"]').attr('data-obj')]
-			} else {
-				nextBox = new mazeBox(box.belowBox); 
-			}
-		}
-		else if (direction=='left' && box.leftBox) {
-			if ( $('[data-cords="'+box.leftBox+'"]').attr('data-obj') ) {
-				nextBox = coreMaze.initializedBoxes[$('[data-cords="'+box.leftBox+'"]').attr('data-obj')]
-			} else {
-				nextBox = new mazeBox(box.leftBox); 
+				nextBox = new mazeBox(box.adjacentBoxes[i]);
 			}
 		}
 		// console.log(nextBox,coreMaze.currentMazeBox,direction,coreMaze.travelledQueue.indexOf(nextBox));
@@ -109,12 +89,12 @@ function moveInTRBL(box) {
 			// if (coreMaze.prevMazeBox) { console.log(coreMaze.prevMazeBox); } else { console.log(undefined); }
 			if ( coreMaze.currentMazeBox == box
 				&& coreMaze.travelledQueue.indexOf(nextBox) == -1
-				&& box.restrictedFrom.indexOf(nextBox) == -1 ) {
+				&& box.restrictedTo.indexOf(nextBox) == -1 ) {
 				coreMaze.markActiveBox(nextBox);
 				// console.log(coreMaze);
 				if (coreMaze.currentMazeBox.open=="yes") {
 					coreMaze.takeStep(box);
-					verbose(nextBox.xy);
+					// verbose(nextBox.xy);
 					if ( nextBox.xy==coreMaze.exit ) {
 						clearTimeout(steps);
 						verbose('Solution found');
@@ -131,7 +111,7 @@ function moveInTRBL(box) {
 			} else {
 				if (nextBox.open=="yes" &&
 					coreMaze.travelledQueue.indexOf(nextBox) == -1 &&
-					box.restrictedFrom.indexOf(nextBox) == -1) {
+					box.restrictedTo.indexOf(nextBox) == -1) {
 					box.openOptions.push(nextBox.xy);
 				}
 			}
@@ -167,7 +147,7 @@ function tryNewPath() {
 		if( lastOne.openOptions.length ) {
 			// console.log("lastOne");
 			// console.log(coreMaze.lastOneDiscarded);
-			lastOne.restrictedFrom.push(coreMaze.lastOneDiscarded);
+			lastOne.restrictedTo.push(coreMaze.lastOneDiscarded);
 			var delIndex = lastOne.openOptions.indexOf(coreMaze.lastOneDiscarded.xy);
 			// console.log(delIndex,lastOne.openOptions);
 			if (delIndex>-1) { lastOne.openOptions.splice(delIndex,1); }
@@ -198,7 +178,13 @@ function outPut(msg) {
 // Below code is for plotting diviers, not used in solving maze
 // ------------------------------------------------------------
 $('.js-go').click(function(){
-	var newDividersCords = $.trim($('.js-inp').val());
+	var inpVal = $('.js-inp').val();
+	if (inpVal=="") {
+		verbose('No input recieved, no dividers added, solving maze without any new divider. You can add new dividers in format [2,2]:[2,3];[2,2]:[3,2].')
+		startSolving();
+		return true;
+	}
+	var newDividersCords = $.trim(inpVal);
 	if ( newDividersCords == "" || newDividersCords == undefined ) {
 		verbose("That input is not correct. Please use format [2,2]:[2,3];[2,2]:[3,2]");
 	} else {
@@ -270,9 +256,7 @@ function plotNewDividers(cords) { // input in format "[2,2]:[2,3];[2,2]:[3,2]"
 		}
 		// console.log(dividersCreated,dividers.length);
 		if ( dividersCreated == dividers.length ) {
-			window.mz = new mazeBox(coreMaze.entry);
-			moveInTRBL(mz);
-			$('.js-go').attr('disabled','disabled')
+			startSolving();
 		}
 	}
 }
@@ -287,4 +271,10 @@ function blockPath(cords) {
 	// console.log(cords);
 	var selectorString = '[data-cords="'+cords+'"]'
 	$(selectorString).attr('data-divider','yes').attr('data-path-open','no');
+}
+
+function startSolving() {
+	window.mz = new mazeBox(coreMaze.entry);
+	moveInTRBL(mz);
+	// $('.js-go').attr('disabled','disabled')
 }
