@@ -9,7 +9,7 @@ This program will give a step by step explanation of what is going on, with inte
 
 &nbsp;
 ##### The Problem
-*Follow the above <a href="http://utsavdevsharma.in/content/mazesolver/" target="_blank">link</a>, there the problem is axplained properly with examples*<br>
+*Follow the above <a href="http://utsavdevsharma.in/content/mazesolver/" target="_blank">link</a>, there the problem is explained properly with examples*<br>
 **Maze Solver:** Consider a 5x5 grid maze, with a positive integer co-ordinate system and the point [0,0] located in the bottom left corner. Points are specified in [x,y] format. The grid has an entrance at position [0,1] and an exit at position [4,3]. All mazes have a core definition as above. In addition, internal dividers can be described within the grid using the format [x,y]:[x',y'] to specify start and end points. Multiple dividers can be specified in semi-colon delimited format. Write a tested program capable of identifying the path from entrance to exit for any maze of the type described above. If the maze can be solved, the program should output a valid path from entrance to exit (any valid path is equally good) else it should output the string 'blocked'.
 
 &nbsp;
